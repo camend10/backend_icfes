@@ -15,11 +15,11 @@ return new class() extends Migration
             $table->id();
             $table->string('identificacion', 20);
             $table->string('name', 50);
-            $table->string('email')->unique();
+            $table->string('email', 100)->unique();
             $table->string('username', 20);
-            $table->string('password');
-            $table->string('telefono', 30);
-            $table->string('direccion', 255)->nullable();
+            $table->string('password', 100);
+            $table->string('telefono', 30)->nullable();
+            $table->text('direccion', 255)->nullable();
             $table->integer('curso')->unsigned();
             $table->string('estado', 20);
             $table->timestamp('email_verified_at')->nullable();

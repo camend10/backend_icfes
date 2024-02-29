@@ -20,6 +20,7 @@ return new class extends Migration
                 ->on('departamentos')
                 ->onUpdate('restrict')
                 ->onDelete('restrict');
+            $table->rememberToken();
             $table->timestamps();
         });
     }
