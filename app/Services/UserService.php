@@ -15,15 +15,48 @@ class UserService
 
     public function createUser(array $request)
     {
-        $request['password'] = bcrypt($request['password']);
+        $request['password'] = bcrypt($request['identificacion']);
         $request['estado'] = 1;
-        if ($request['rol_id'] == 1 || $request['rol_id'] == 2) {
-            $request['tipo'] = "tipo_admin";
-        } else {
-            $request['tipo'] = "tipo_simulador";
+
+        switch ($request["role_id"]) {
+            case 1:
+                $request['tipo'] = "tipo_admin";
+                break;
+            case 2:
+                $request['tipo'] = "tipo_usuario";
+                break;
+            case 3:
+                $request['tipo'] = "tipo_estudiante";
+                break;
+            case 4:
+                $request['tipo'] = "tipo_docente";
+                break;
         }
 
+        $request['user_id'] = auth()->user()->id;
         return $this->userRepository->createUser($request);
+    }
+
+    public function modifyUser(array $request, $id)
+    {
+
+        switch ($request["role_id"]) {
+            case 1:
+                $request['tipo'] = "tipo_admin";
+                break;
+            case 2:
+                $request['tipo'] = "tipo_usuario";
+                break;
+            case 3:
+                $request['tipo'] = "tipo_estudiante";
+                break;
+            case 4:
+                $request['tipo'] = "tipo_docente";
+                break;
+        }
+
+        $request['user_id'] = auth()->user()->id;
+        return $this->userRepository->modifyUser($request, $id);
     }
 
     public function updateUser(array $request, $id): int
@@ -31,13 +64,28 @@ class UserService
         return $this->userRepository->updateUser($id, $request);
     }
 
-    public function deleteUser(int $id, string $valor): int
+    public function estadoUser(int $id, string $valor): int
     {
-        return $this->userRepository->deleteUser($id, $valor);
+        return $this->userRepository->estadoUser($id, $valor);
     }
 
     public function getUserByEmail($email)
     {
         return $this->userRepository->getUserByEmail($email);
+    }
+
+    public function getUserById($id)
+    {
+        return $this->userRepository->getUserById($id);
+    }
+
+    public function updateImgById($id, string $filename)
+    {
+        return $this->userRepository->updateImgById($id, $filename);
+    }
+
+    public function getUsers($txtbusqueda)
+    {
+        return $this->userRepository->getUsers($txtbusqueda);
     }
 }

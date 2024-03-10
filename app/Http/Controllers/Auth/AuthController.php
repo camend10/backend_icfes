@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Services\UserService;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -19,7 +20,6 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-
         // $credentials = $request->only('email', 'password');
         try {
             if (!$token = JWTAuth::attempt([
@@ -67,17 +67,22 @@ class AuthController extends Controller
         return $this->respondWithToken($token, $user);
     }
 
-
     protected function respondWithToken($token, $user)
     {
+
+        $actual = Carbon::now();
+        $edad = $actual->diffInYears($user->fecha_nacimiento, $actual);
+
         return response()->json([
-            'authToken' => $token,
+            'ok' => true,
+            'token' => $token,
             'token_type' => 'bearer',
             'expiresIn' => JWTAuth::factory()->getTTL(),
-            // 'user' => $user
-            'authUser' => auth()->user(),
-			'id'=>auth()->user()->id,
-            'authError' => false
+            'user' => $user,
+            'edad' => $edad,
+            // 'user' => auth()->user(),
+            'id' => auth()->user()->id,
+            'error' => false,
         ], 200);
     }
 }

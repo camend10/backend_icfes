@@ -7,7 +7,6 @@ use App\Models\User;
 
 class UserRepositoryImpl implements UserRepository
 {
-
     public function getUserAll()
     {
         return User::all();
@@ -15,7 +14,18 @@ class UserRepositoryImpl implements UserRepository
 
     public function getUserById($id)
     {
-        return User::findOrFail($id);
+        // return User::findOrFail($id);
+
+        return User::where('id', $id)
+            ->with(
+                'tipodocumento',
+                'departamento',
+                'municipio',
+                'curso',
+                'grado',
+                'rol'
+            )
+            ->first();
     }
 
     public function createUser(array $user)
@@ -28,15 +38,54 @@ class UserRepositoryImpl implements UserRepository
         return User::whereId($id)->update($user);
     }
 
-    public function deleteUser($id, string $valor)
+    public function estadoUser($id, string $valor)
     {
         return User::where(['id' => $id])->update([
             'estado' => $valor
-        ]);;
+        ]);
     }
 
     public function getUserByEmail($email)
     {
-        return User::where('email', $email)->first();
+        return User::where('email', $email)
+            ->with(
+                'tipodocumento',
+                'departamento',
+                'municipio',
+                'curso',
+                'grado',
+                'rol'
+            )
+            ->first();
+    }
+
+    public function updateImgById($id, string $filename)
+    {
+        return User::where(['id' => $id])->update([
+            'foto' => $filename
+        ]);
+    }
+
+    public function getUsers($txtbusqueda)
+    {
+        return User::when($txtbusqueda, function ($sql) use ($txtbusqueda) {
+            $sql->where('name', 'LIKE', '%' . $txtbusqueda . '%')
+                ->orWhere('identificacion', 'LIKE', '%' . $txtbusqueda . '%')
+                ->orWhere('email', 'LIKE', '%' . $txtbusqueda . '%');
+        })
+            ->with(
+                'tipodocumento',
+                'departamento',
+                'municipio',
+                'curso',
+                'grado',
+                'rol'
+            )
+            ->get();
+    }
+
+    public function modifyUser(array $user, $id)
+    {
+        return User::whereId($id)->update($user);
     }
 }

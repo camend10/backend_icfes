@@ -23,19 +23,26 @@ class User extends Authenticatable implements JWTSubject
     protected $table = 'users';
 
     protected $fillable = [
+        'tipo_doc_id',
         'identificacion',
         'name',
         'email',
+        "username",
         'password',
         "telefono",
-        "estado",
         "direccion",
-        "rol_id",
+        "curso_id",
+        "estado",
         "departamento_id",
         "municipio_id",
-        "curso",
-        "username",
-        "tipo"
+        "role_id",
+        "tipo",
+        "codigo",
+        "jornada",
+        "fecha_nacimiento",
+        "user_id",
+        "foto",
+        "genero"
     ];
 
     /**
@@ -76,5 +83,35 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function departamento()
+    {
+        return $this->belongsTo(Departamento::class)->withDefault();
+    }
+
+    public function municipio()
+    {
+        return $this->belongsTo(Municipio::class)->withDefault();
+    }
+
+    public function tipodocumento()
+    {
+        return $this->belongsTo(TipoDocumento::class, 'tipo_doc_id')->withDefault();
+    }
+
+    public function curso()
+    {
+        return $this->belongsTo(Curso::class)->withDefault();
+    }
+
+    public function grado()
+    {
+        return $this->belongsTo(Grado::class)->withDefault();
+    }
+
+    public function rol()
+    {
+        return $this->belongsTo(Role::class, 'role_id')->withDefault();
     }
 }

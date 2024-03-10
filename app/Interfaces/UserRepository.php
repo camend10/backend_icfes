@@ -12,7 +12,13 @@ interface UserRepository
 
     public function updateUser($id, array $user);
 
-    public function deleteUser($id, string $valor);
+    public function estadoUser($id, string $valor);
 
     public function getUserByEmail($email);
+
+    public function updateImgById($id, string $filename);
+
+    public function getUsers($txtbusqueda);
+
+    public function modifyUser(array $user, $id);
 }
