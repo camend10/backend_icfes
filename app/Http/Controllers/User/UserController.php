@@ -40,6 +40,13 @@ class UserController extends Controller
     public function modifyUser(RegisterRequest $request, $id)
     {
 
+        if (auth()->user()->role_id != 1) {
+            return response()->json([
+                'ok' => false,
+                'errors' => "El usuario no tiene permisos para realizar esta operación"
+            ], 500);
+        }
+
         $user = $this->userService->modifyUser($request->validated(), $id);
         if ($user) {
             $user = $this->userService->getUserById($id);
@@ -54,7 +61,6 @@ class UserController extends Controller
             ], 500);
         }
     }
-
 
     public function index()
     {
@@ -144,6 +150,14 @@ class UserController extends Controller
 
     public function estado()
     {
+
+        if (auth()->user()->role_id != 1) {
+            return response()->json([
+                'ok' => false,
+                'errors' => "El usuario no tiene permisos para realizar esta operación"
+            ], 500);
+        }
+
         $id = request()->get('id');
         $estado = request()->get('estado');
 

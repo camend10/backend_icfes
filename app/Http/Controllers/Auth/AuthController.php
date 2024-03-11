@@ -21,26 +21,39 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         // $credentials = $request->only('email', 'password');
-        try {
-            if (!$token = JWTAuth::attempt([
-                "email" => $request->email,
-                "password" => $request->password,
-                "estado" => 1,
-                "tipo" => "tipo_admin"
-            ])) {
-                return response()->json([
-                    'error' => 'Credenciales Invalidas'
-                ], 401);
-            }
-        } catch (JWTException $e) {
-            return response()->json([
-                'error' => 'Error: Token no encontrado'
-            ], 500);
-        }
 
         $user = $this->userService->getUserByEmail($request->email);
+        if ($user) {
 
-        return $this->respondWithToken($token, $user);
+            if ($user->tipo == "tipo_estudiante") {
+                return response()->json([
+                    'error' => 'El usuario no tiene permisos para entrar a la plataforma'
+                ], 401);
+            } else {
+
+                try {
+                    if (!$token = JWTAuth::attempt([
+                        "email" => $request->email,
+                        "password" => $request->password,
+                        "estado" => 1,
+                        "tipo" => $user->tipo
+                    ])) {
+                        return response()->json([
+                            'error' => 'Credenciales Invalidas'
+                        ], 401);
+                    }
+                } catch (JWTException $e) {
+                    return response()->json([
+                        'error' => 'Error: Token no encontrado'
+                    ], 500);
+                }
+                return $this->respondWithToken($token, $user);
+            }
+        } else {
+            return response()->json([
+                'error' => 'No existe usuario'
+            ], 401);
+        }
     }
 
     public function loginSimulador(LoginRequest $request)
@@ -73,6 +86,7 @@ class AuthController extends Controller
         $actual = Carbon::now();
         $edad = $actual->diffInYears($user->fecha_nacimiento, $actual);
 
+        // dd($user->roles->nombre);die;
         return response()->json([
             'ok' => true,
             'token' => $token,
@@ -83,6 +97,51 @@ class AuthController extends Controller
             // 'user' => auth()->user(),
             'id' => auth()->user()->id,
             'error' => false,
+            'menu' => $this->obtenerMenu($user->rol->nombre)
         ], 200);
+    }
+
+    public function obtenerMenu($ROLE)
+    {
+        $menu = [];
+        switch ($ROLE) {
+            case "Admin":
+                $menu = [
+                    [
+                        'titulo' => 'Usuarios',
+                        'icono' => 'ki-duotone ki-profile-user',
+                        'submenu' => [
+                            ['titulo' => 'Gestion de usuarios', 'url' => '/usuarios'],
+                            ['titulo' => 'Roles', 'url' => '/login'],
+                        ]
+                    ],
+                    [
+                        'titulo' => 'Preguntas',
+                        'icono' => 'ki-duotone ki-book',
+                        'submenu' => [
+                            ['titulo' => 'Gestion de preguntas', 'url' => '/preguntas'],
+                        ]
+                    ],
+                    [
+                        'titulo' => 'Informes',
+                        'icono' => 'ki-duotone ki-file-added',
+                        'submenu' => [
+                            ['titulo' => 'Informe general', 'url' => '/informe-general'],
+                        ]
+                    ]
+                ];
+                break;
+            case "Usuario":
+                $menu = [];
+                break;
+            case "Estudiante":
+                $menu = [];
+                break;
+            case "Docente":
+                $menu = [];
+                break;
+        }
+
+        return $menu;
     }
 }
