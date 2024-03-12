@@ -22,6 +22,8 @@ Route::middleware('jwt.verify')->group(function () {
         Route::post('/', [UserController::class, 'index']);
         Route::post('upload', [UserController::class, 'upload']);
         Route::post('estado', [UserController::class, 'estado']);
+        Route::post('resetear', [UserController::class, 'resetear']);
+        Route::post('cambiar', [UserController::class, 'cambiar']);
         Route::post('by-id', [UserController::class, 'byid']);
     });
 

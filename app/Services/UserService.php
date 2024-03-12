@@ -69,6 +69,11 @@ class UserService
         return $this->userRepository->estadoUser($id, $valor);
     }
 
+    public function resetearUser(int $id, string $password): int
+    {
+        return $this->userRepository->resetearUser($id, $password);
+    }
+
     public function getUserByEmail($email)
     {
         return $this->userRepository->getUserByEmail($email);
@@ -88,4 +93,5 @@ class UserService
     {
         return $this->userRepository->getUsers($txtbusqueda);
     }
+
 }

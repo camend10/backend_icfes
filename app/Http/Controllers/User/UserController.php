@@ -185,6 +185,34 @@ class UserController extends Controller
         }
     }
 
+    public function resetear()
+    {
+
+        if (auth()->user()->role_id != 1) {
+            return response()->json([
+                'ok' => false,
+                'errors' => "El usuario no tiene permisos para realizar esta operación"
+            ], 500);
+        }
+
+        $id = request()->get('id');
+        $password = "12345678";
+        $user = $this->userService->resetearUser($id, $password);
+        if ($user) {
+            $user = $this->userService->getUserById($id);
+            return response()->json([
+                'ok' => true,
+                'user' => $user,
+                'mensaje' => "Clave reseteada al usuario: " . $user->name
+            ], 201);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'errors' => "La clave no se pudo resetear"
+            ], 500);
+        }
+    }
+
     public function byid()
     {
         $id = request()->get('id');
@@ -194,5 +222,56 @@ class UserController extends Controller
             'ok' => true,
             'user' => $user
         ], 200);
+    }
+
+    public function cambiar(Request $request)
+    {
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'password' => [
+                'required', function ($attribute, $value, $fail) {
+                    if (!\Illuminate\Support\Facades\Hash::check($value, auth()->user()->password)) {
+                        return $fail(__('La clave actual es incorrecta'));
+
+                        // return (object) ['ok' => false,'error' => $error];  
+                        // return response()->json([
+                        //     'ok' => false,
+                        //     'error' => $error
+                        // ], 500);
+                    }
+                }
+            ],
+            'newpassword' => 'required|min:8|max:20',
+            'confirmpassword' => 'required|same:newpassword'
+        ], [
+            'password.required' => 'La clave actual es requerida',
+            'newpassword.required' => 'La nueva clave es requerida',
+            'newpassword.min' => 'La nueva clave debe tener al menos 8 caracteres',
+            'newpassword.max' => 'La nueva clave no debe tener más de 20 caracteres.',
+            'confirmpassword.required' => 'vuelve a ingresar tu nueva clave',
+            'confirmpassword.same' => 'No coincide con la nueva clave',
+        ]);
+
+        if (!$validator->passes()) {
+
+            return response()->json([
+                'error' => $validator->errors()->toArray()
+            ], 500);
+        } else {
+            $id = request()->get('id');
+            $password = request()->get('newpassword');
+            $cambiar = $this->userService->resetearUser($id, $password);
+            if (!$cambiar) {
+                return response()->json([
+                    'ok' => false,
+                    'errors' => "Algo salió mal, no se pudo actualizar la clave"
+                ], 500);
+            } else {
+                return response()->json([
+                    'ok' => true,
+                    'mensaje' => "Tu clave ha sido cambiada exitosamente"
+                ], 201);
+            }
+        }
     }
 }

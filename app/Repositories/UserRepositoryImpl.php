@@ -45,6 +45,13 @@ class UserRepositoryImpl implements UserRepository
         ]);
     }
 
+    public function resetearUser($id, string $password)
+    {
+        return User::where(['id' => $id])->update([
+            'password' => bcrypt($password)
+        ]);
+    }
+
     public function getUserByEmail($email)
     {
         return User::where('email', $email)

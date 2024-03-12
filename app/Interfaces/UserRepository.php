@@ -14,6 +14,8 @@ interface UserRepository
 
     public function estadoUser($id, string $valor);
 
+    public function resetearUser($id, string $password);
+
     public function getUserByEmail($email);
 
     public function updateImgById($id, string $filename);
