@@ -18,13 +18,19 @@ class GeneralController extends Controller
 
     public function departamentos()
     {
-        $departamentos = $this->generalService->getDepartamentos();
-
-        return response()->json([
-            'ok' => true,
-            'departamentos' => $departamentos,
-            'total' => $departamentos->count()
-        ], 200);
+        $departamentos = $this->generalService->getDepartamentos();        
+        if ($departamentos) {
+            return response()->json([
+                'ok' => true,
+                'departamentos' => $departamentos,
+                'total' => $departamentos->count()
+            ], 200);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'error' => "Lo sentimos, ocurrió un error en el servidor: ",
+            ], 500);
+        }
     }
 
     public function municipios()
@@ -38,23 +44,34 @@ class GeneralController extends Controller
                 'nombre' => strtoupper($item->nombre),
             ];
         }
-
-
-        return response()->json([
-            'ok' => true,
-            'municipios' => $municipios,
-            'total' => $muni->count()
-        ], 200);
+        if ($muni) {
+            return response()->json([
+                'ok' => true,
+                'municipios' => $municipios,
+                'total' => $muni->count()
+            ], 200);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'error' => "Lo sentimos, ocurrió un error en el servidor: ",
+            ], 500);
+        }
     }
 
     public function tipodocs()
     {
-        $tipodocumentos = $this->generalService->getTipoDocs();
-
-        return response()->json([
-            'ok' => true,
-            'tipodocumentos' => $tipodocumentos,
-            'total' => $tipodocumentos->count()
-        ], 200);
+        $tipodocumentos = $this->generalService->getTipoDocs();        
+        if ($tipodocumentos) {
+            return response()->json([
+                'ok' => true,
+                'tipodocumentos' => $tipodocumentos,
+                'total' => $tipodocumentos->count()
+            ], 200);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'error' => "Lo sentimos, ocurrió un error en el servidor: ",
+            ], 500);
+        }
     }
 }

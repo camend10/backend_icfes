@@ -32,7 +32,7 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'ok' => false,
-                'errors' => "El usuario no fue creado"
+                'error' => "El usuario no fue creado"
             ], 500);
         }
     }
@@ -57,7 +57,7 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'ok' => false,
-                'errors' => "El usuario no fue modificado"
+                'error' => "El usuario no fue modificado"
             ], 500);
         }
     }
@@ -66,12 +66,19 @@ class UserController extends Controller
     {
         $txtbusqueda = request()->get('txtbusqueda');
         $users = $this->userService->getUsers($txtbusqueda);
+        if($users) {
+            return response()->json([
+                'ok' => true,
+                'users' => $users,
+                'total' => $users->count()
+            ], 200);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'error' => "Lo sentimos, ocurrió un error en el servidor: ",
+            ], 500);
+        }
 
-        return response()->json([
-            'ok' => true,
-            'users' => $users,
-            'total' => $users->count()
-        ], 200);
     }
 
     public function update(UpdatePerfilRequest $request, $id)
@@ -89,7 +96,7 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'ok' => false,
-                'errors' => "El usuario no fue modificado"
+                'error' => "El usuario no fue modificado"
             ], 500);
         }
     }
@@ -123,8 +130,7 @@ class UserController extends Controller
                     unlink($archivo);
                 }
             }
-            $mover = $request->archivo->move(public_path('imagenes/foto/' . $tipo . '/' . $data["id"]), $filename);
-
+            $mover = $request->archivo->move(public_path('imagenes/foto/' . $tipo . '/' . $data["id"]), $filename);            
             if ($mover) {
                 $user = $this->userService->updateImgById($data["id"], $filename);
                 if ($user) {
@@ -136,13 +142,13 @@ class UserController extends Controller
                 } else {
                     return response()->json([
                         'ok' => false,
-                        'errors' => "La imagen no fue subida"
+                        'error' => "La imagen no fue subida"
                     ], 500);
                 }
             } else {
                 return response()->json([
                     'ok' => false,
-                    'errors' => "La imagen no fue subida"
+                    'error' => "La imagen no fue subida"
                 ], 500);
             }
         }
@@ -150,7 +156,6 @@ class UserController extends Controller
 
     public function estado()
     {
-
         if (auth()->user()->role_id != 1) {
             return response()->json([
                 'ok' => false,
@@ -169,7 +174,7 @@ class UserController extends Controller
             $valor = 1;
         }
 
-        $user = $this->userService->estadoUser($id, $valor);
+        $user = $this->userService->estadoUser($id, $valor);        
         if ($user) {
             $user = $this->userService->getUserById($id);
             return response()->json([
@@ -180,7 +185,7 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'ok' => false,
-                'errors' => $mensaje
+                'error' => "Lo sentimos, ocurrió un error en el servidor: ",
             ], 500);
         }
     }
@@ -197,7 +202,7 @@ class UserController extends Controller
 
         $id = request()->get('id');
         $password = "12345678";
-        $user = $this->userService->resetearUser($id, $password);
+        $user = $this->userService->resetearUser($id, $password);        
         if ($user) {
             $user = $this->userService->getUserById($id);
             return response()->json([
@@ -208,7 +213,7 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'ok' => false,
-                'errors' => "La clave no se pudo resetear"
+                'error' => "La clave no se pudo resetear"
             ], 500);
         }
     }
@@ -217,11 +222,17 @@ class UserController extends Controller
     {
         $id = request()->get('id');
         $user = $this->userService->getUserById($id);
-
-        return response()->json([
-            'ok' => true,
-            'user' => $user
-        ], 200);
+        if ($user) {
+            return response()->json([
+                'ok' => true,
+                'user' => $user
+            ], 200);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'error' => "No existe usuario con este id: " . $id
+            ], 500);
+        }
     }
 
     public function cambiar(Request $request)
@@ -233,7 +244,7 @@ class UserController extends Controller
                     if (!\Illuminate\Support\Facades\Hash::check($value, auth()->user()->password)) {
                         return $fail(__('La clave actual es incorrecta'));
 
-                        // return (object) ['ok' => false,'error' => $error];  
+                        // return (object) ['ok' => false,'error' => $error];
                         // return response()->json([
                         //     'ok' => false,
                         //     'error' => $error
@@ -264,7 +275,7 @@ class UserController extends Controller
             if (!$cambiar) {
                 return response()->json([
                     'ok' => false,
-                    'errors' => "Algo salió mal, no se pudo actualizar la clave"
+                    'error' => "Algo salió mal, no se pudo actualizar la clave"
                 ], 500);
             } else {
                 return response()->json([

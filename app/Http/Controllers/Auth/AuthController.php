@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Services\UserService;
@@ -80,6 +81,30 @@ class AuthController extends Controller
         return $this->respondWithToken($token, $user);
     }
 
+    public function refresh()
+    {
+        // Intenta refrescar el token
+        try {
+            $token = JWTAuth::getToken(); // Obtiene el token actual
+            $tokenRefreshed = JWTAuth::refresh($token); // Refresca el token
+            JWTAuth::setToken($tokenRefreshed); // Reemplaza el token viejo con el nuevo
+            $user = JWTAuth::authenticate($tokenRefreshed); // Obtiene el usuario asociado al token refrescado
+
+            return $this->respondWithToken($tokenRefreshed, $user);
+            // return response()->json([
+            //     'success' => true,
+            //     'token' => $tokenRefreshed, // Devuelve el token refrescado
+            //     'user' => $user
+            // ]);
+        } catch (JWTException $e) {
+            // No se pudo refrescar el token, posiblemente porque es inválido o ha expirado.
+            return response()->json([
+                'ok' => false,
+                'error' => 'No se pudo refrescar el token.'
+            ], 401);
+        }
+    }
+
     protected function respondWithToken($token, $user)
     {
 
@@ -116,6 +141,13 @@ class AuthController extends Controller
                         ]
                     ],
                     [
+                        'titulo' => 'Instituciones',
+                        'icono' => 'ki-duotone ki-home',
+                        'submenu' => [
+                            ['titulo' => 'Gestion de instituciones', 'url' => '/instituciones']
+                        ]
+                    ],
+                    [
                         'titulo' => 'Preguntas',
                         'icono' => 'ki-duotone ki-book',
                         'submenu' => [
@@ -132,13 +164,37 @@ class AuthController extends Controller
                 ];
                 break;
             case "Usuario":
-                $menu = [];
+                $menu = [
+                    [
+                        'titulo' => 'Informes',
+                        'icono' => 'ki-duotone ki-file-added',
+                        'submenu' => [
+                            ['titulo' => 'Informe general', 'url' => '/informe-general'],
+                        ]
+                    ]
+                ];
                 break;
             case "Estudiante":
-                $menu = [];
+                $menu = [
+                    [
+                        'titulo' => 'Informes',
+                        'icono' => 'ki-duotone ki-file-added',
+                        'submenu' => [
+                            ['titulo' => 'Informe general', 'url' => '/informe-general'],
+                        ]
+                    ]
+                ];
                 break;
             case "Docente":
-                $menu = [];
+                $menu = [
+                    [
+                        'titulo' => 'Informes',
+                        'icono' => 'ki-duotone ki-file-added',
+                        'submenu' => [
+                            ['titulo' => 'Informe general', 'url' => '/informe-general'],
+                        ]
+                    ]
+                ];
                 break;
         }
 

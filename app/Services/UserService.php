@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Interfaces\UserRepository;
+use DateTime;
 
 class UserService
 {
@@ -17,7 +18,8 @@ class UserService
     {
         $request['password'] = bcrypt($request['identificacion']);
         $request['estado'] = 1;
-
+        $request['fecha_nacimiento'] = new DateTime($request['fecha_nacimiento']);
+        $request['fecha_nacimiento'] = $request['fecha_nacimiento']->format('Y-m-d');
         switch ($request["role_id"]) {
             case 1:
                 $request['tipo'] = "tipo_admin";
@@ -39,6 +41,9 @@ class UserService
 
     public function modifyUser(array $request, $id)
     {
+
+        $request['fecha_nacimiento'] = new DateTime($request['fecha_nacimiento']);
+        $request['fecha_nacimiento'] = $request['fecha_nacimiento']->format('Y-m-d');
 
         switch ($request["role_id"]) {
             case 1:
@@ -93,5 +98,4 @@ class UserService
     {
         return $this->userRepository->getUsers($txtbusqueda);
     }
-
 }

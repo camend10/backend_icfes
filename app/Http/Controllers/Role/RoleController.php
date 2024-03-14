@@ -19,11 +19,17 @@ class RoleController extends Controller
     {
         $txtbusqueda = request()->get('txtbusqueda');
         $roles = $this->roleService->getRoles($txtbusqueda);
-
-        return response()->json([
-            'ok' => true,
-            'roles' => $roles,
-            'total' => $roles->count()
-        ], 200);
+        if ($roles) {
+            return response()->json([
+                'ok' => true,
+                'roles' => $roles,
+                'total' => $roles->count()
+            ], 200);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'error' => "Lo sentimos, ocurrió un error en el servidor: ",
+            ], 500);
+        }
     }
 }
