@@ -47,6 +47,12 @@ class InstitucionRepositoryImpl implements InstitucionRepository
             ->get();
     }
 
+    public function getActivas()
+    {
+        return Institucion::where('estado', 1)
+            ->get();
+    }
+
     public function modifyInstitucion(array $institucion, $id)
     {
         return Institucion::whereId($id)->update($institucion);

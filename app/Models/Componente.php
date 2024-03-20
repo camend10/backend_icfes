@@ -5,12 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Grado extends Model
+class Componente extends Model
 {
     use HasFactory;
 
-    protected $table = 'grados';
+    protected $table = 'componente';
+
     protected $fillable = [
-        'nombre', 'sigla', 'estado'
+        "nombre",
+        "materia_id",
+        "estado"
     ];
 }

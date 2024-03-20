@@ -16,5 +16,7 @@ interface InstitucionRepository
 
     public function getInstituciones($txtbusqueda);
 
+    public function getActivas();
+
     public function modifyInstitucion(array $institucion, $id);
 }

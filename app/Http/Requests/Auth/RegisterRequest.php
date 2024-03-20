@@ -44,6 +44,7 @@ class RegisterRequest extends FormRequest
                 'user_id' => 'integer|nullable',
                 'foto' => 'string|nullable',
                 'genero' => 'string|nullable',
+                'institucion_id' => 'integer|nullable',
             ],
             'PUT' =>  [
                 'tipo_doc_id' => 'required',
@@ -66,6 +67,7 @@ class RegisterRequest extends FormRequest
                 'user_id' => 'integer|nullable',
                 'foto' => 'string|nullable',
                 'genero' => 'string|nullable',
+                'institucion_id' => 'integer|nullable',
             ],
         };
     }

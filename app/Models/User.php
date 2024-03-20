@@ -31,6 +31,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         "telefono",
         "direccion",
+        "grado_id",
         "curso_id",
         "estado",
         "departamento_id",
@@ -42,7 +43,8 @@ class User extends Authenticatable implements JWTSubject
         "fecha_nacimiento",
         "user_id",
         "foto",
-        "genero"
+        "genero",
+        "institucion_id"
     ];
 
     /**
@@ -113,5 +115,10 @@ class User extends Authenticatable implements JWTSubject
     public function rol()
     {
         return $this->belongsTo(Role::class, 'role_id')->withDefault();
+    }
+
+    public function institucion()
+    {
+        return $this->belongsTo(Institucion::class, 'institucion_id')->withDefault();
     }
 }

@@ -45,4 +45,9 @@ class InstitucionService
     {
         return $this->institucionRepository->getInstituciones($txtbusqueda);
     }
+
+    public function getActivas()
+    {
+        return $this->institucionRepository->getActivas();
+    }
 }

@@ -6,11 +6,13 @@ use App\Interfaces\UserRepository;
 use App\Interfaces\RoleRepository;
 use App\Interfaces\GeneralRepository;
 use App\Interfaces\InstitucionRepository;
+use App\Interfaces\MateriaRepository;
 
 use App\Repositories\UserRepositoryImpl;
 use App\Repositories\RoleRepositoryImpl;
 use App\Repositories\GeneralRepositoryImpl;
 use App\Repositories\InstitucionRepositoryImpl;
+use App\Repositories\MateriaRepositoryImpl;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -45,6 +47,7 @@ class RepositoryServiceProvider extends ServiceProvider
         RoleRepository::class => RoleRepositoryImpl::class,
         GeneralRepository::class => GeneralRepositoryImpl::class,
         InstitucionRepository::class => InstitucionRepositoryImpl::class,
+        MateriaRepository::class => MateriaRepositoryImpl::class,
     ];
     /**
      * All of the container singletons that should be registered.

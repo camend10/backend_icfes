@@ -37,7 +37,7 @@ class InstitucionController extends Controller
 
     public function create(InstitucionRequest $request)
     {
-        $institucion = $this->institucionService->createInstitucion($request->validated());            
+        $institucion = $this->institucionService->createInstitucion($request->validated());
         if ($institucion) {
             return response()->json([
                 'ok' => true,
@@ -164,6 +164,22 @@ class InstitucionController extends Controller
             return response()->json([
                 'ok' => false,
                 'error' => "No existe institución con este id: " . $id
+            ], 500);
+        }
+    }
+
+    public function activas()
+    {
+        $instituciones = $this->institucionService->getActivas();
+        if ($instituciones) {
+            return response()->json([
+                'ok' => true,
+                'instituciones' => $instituciones
+            ], 200);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'error' => "Lo sentimos, ocurrió un error en el servidor: ",
             ], 500);
         }
     }
