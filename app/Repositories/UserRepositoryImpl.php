@@ -95,4 +95,25 @@ class UserRepositoryImpl implements UserRepository
     {
         return User::whereId($id)->update($user);
     }
+
+    public function getUserByUsername($username)
+    {
+        return User::where('username', $username)
+            ->with(
+                'tipodocumento',
+                'departamento',
+                'municipio',
+                'curso',
+                'grado',
+                'rol'
+            )
+            ->first();
+    }
+
+    public function getUserByRol($rol)
+    {
+        return User::where('role_id', $rol)
+            ->where('estado', 1)
+            ->get();
+    }
 }

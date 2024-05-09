@@ -17,10 +17,14 @@ interface UserRepository
     public function resetearUser($id, string $password);
 
     public function getUserByEmail($email);
-
+    
     public function updateImgById($id, string $filename);
-
+    
     public function getUsers($txtbusqueda);
-
+    
     public function modifyUser(array $user, $id);
+
+    public function getUserByUsername($username);
+
+    public function getUserByRol($rol);
 }

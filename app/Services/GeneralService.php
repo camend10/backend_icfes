@@ -28,7 +28,7 @@ class GeneralService
     {
         return $this->generalRepository->getTipoDocs();
     }
-    
+
     public function cursos()
     {
         return $this->generalRepository->cursos();
@@ -52,5 +52,15 @@ class GeneralService
     public function componentes($materia_id)
     {
         return $this->generalRepository->componentes($materia_id);
+    }
+
+    public function getTotalPreguntas()
+    {
+        return $this->generalRepository->getTotalPreguntas();
+    }
+
+    public function competencias($materia_id)
+    {
+        return $this->generalRepository->competencias($materia_id);
     }
 }

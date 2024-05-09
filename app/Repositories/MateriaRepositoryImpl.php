@@ -52,8 +52,6 @@ class MateriaRepositoryImpl implements MateriaRepository
             "ans3" => $pregunta["ans3"],
             "ans4" => $pregunta["ans4"],
             "true_ans" => $pregunta["true_ans"],
-            "simulacro" => $pregunta["simulacro"],
-            "sesion" => $pregunta["sesion"],
             "componente" => $pregunta["componente"],
             "competencia" => $pregunta["competencia"],
             "que_desc2" => $pregunta["que_desc2"],
@@ -61,6 +59,12 @@ class MateriaRepositoryImpl implements MateriaRepository
             "pre_test" => $pregunta["pre_test"],
             "estado" => $pregunta["estado"],
             "user_id" => $pregunta["user_id"],
+            "g11" => $pregunta["g11"],
+            "g9" => $pregunta["g9"],
+            "g7" => $pregunta["g7"],
+            "g5" => $pregunta["g5"],
+            "g3" => $pregunta["g3"],
+
         ]);
     }
 

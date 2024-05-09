@@ -9,7 +9,7 @@ interface GeneralRepository
     public function getMunicipios();
 
     public function getTipoDocs();
-    
+
     public function cursos();
 
     public function grados();
@@ -19,4 +19,8 @@ interface GeneralRepository
     public function sesiones();
 
     public function componentes($materia_id);
+
+    public function getTotalPreguntas();
+
+    public function competencias($materia_id);
 }

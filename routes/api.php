@@ -7,6 +7,7 @@ use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\General\GeneralController;
 use App\Http\Controllers\Institucion\InstitucionController;
 use App\Http\Controllers\Materia\MateriaController;
+use App\Http\Controllers\Simulacro\SimulacroController;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -17,6 +18,8 @@ Route::prefix('auth')->group(function () {
 Route::middleware('jwt.verify')->group(function () {
 
     Route::prefix('users')->group(function () {
+        Route::group(['middleware' => ['cors']], function () {
+        });
         Route::post('/', [UserController::class, 'index']);
         Route::post('create', [UserController::class, 'create']);
         Route::put('modify/{id}', [UserController::class, 'modifyUser']);
@@ -53,6 +56,8 @@ Route::middleware('jwt.verify')->group(function () {
         Route::post('/sesiones', [GeneralController::class, 'sesiones']);
         Route::post('/simulacros', [GeneralController::class, 'simulacros']);
         Route::post('/componentes', [GeneralController::class, 'componentes']);
+        Route::post('/cargar-dashboard', [GeneralController::class, 'dashboard']);
+        Route::post('/competencias', [GeneralController::class, 'competencias']);
     });
 
     Route::prefix('materias')->group(function () {
@@ -65,5 +70,17 @@ Route::middleware('jwt.verify')->group(function () {
     Route::prefix('preguntas')->group(function () {
         Route::post('create', [MateriaController::class, 'create']);
         Route::post('modify', [MateriaController::class, 'modify']);
+    });
+
+    Route::prefix('simulacros')->group(function () {
+        Route::post('/', [SimulacroController::class, 'simulacros']);
+        Route::post('sesiones', [SimulacroController::class, 'sesiones']);
+        Route::post('sesiones-materias', [SimulacroController::class, 'sesionesMaterias']);
+        Route::post('preguntas', [SimulacroController::class, 'preguntas']);
+        Route::post('preguntas2', [SimulacroController::class, 'preguntas2']);
+        Route::post('guardar-resultados', [SimulacroController::class, 'guardarResultados']);
+        Route::post('verificar-prueba', [SimulacroController::class, 'verificarPrueba']);
+        Route::post('verificar-sesion', [SimulacroController::class, 'verificarSesion']);
+        Route::post('verificar-resultado-sesiones', [SimulacroController::class, 'verificarResultadoSesiones']);
     });
 });

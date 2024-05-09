@@ -114,7 +114,7 @@ class UserController extends Controller
                 $tipo = "Docente";
                 break;
             case "tipo_estudiante":
-                $tipo = "Estudiante ";
+                $tipo = "Estudiante";
                 break;
             case "tipo_admin":
                 $tipo = "Admin";
@@ -130,7 +130,7 @@ class UserController extends Controller
                     unlink($archivo);
                 }
             }
-            $mover = $request->archivo->move(public_path('imagenes/foto/' . $tipo . '/' . $data["id"]), $filename);            
+            $mover = $request->archivo->move(public_path('imagenes/foto/' . $tipo . '/' . $data["id"]), $filename);
             if ($mover) {
                 $user = $this->userService->updateImgById($data["id"], $filename);
                 if ($user) {
@@ -174,7 +174,7 @@ class UserController extends Controller
             $valor = 1;
         }
 
-        $user = $this->userService->estadoUser($id, $valor);        
+        $user = $this->userService->estadoUser($id, $valor);
         if ($user) {
             $user = $this->userService->getUserById($id);
             return response()->json([
@@ -202,18 +202,18 @@ class UserController extends Controller
 
         $id = request()->get('id');
         $password = "12345678";
-        $user = $this->userService->resetearUser($id, $password);        
+        $user = $this->userService->resetearUser($id, $password);
         if ($user) {
             $user = $this->userService->getUserById($id);
             return response()->json([
                 'ok' => true,
                 'user' => $user,
-                'mensaje' => "Clave reseteada al usuario: " . $user->name
+                'mensaje' => "Clave restablecida al usuario: " . $user->name
             ], 201);
         } else {
             return response()->json([
                 'ok' => false,
-                'error' => "La clave no se pudo resetear"
+                'error' => "La clave no se pudo restablecer"
             ], 500);
         }
     }

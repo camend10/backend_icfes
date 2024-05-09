@@ -98,4 +98,14 @@ class UserService
     {
         return $this->userRepository->getUsers($txtbusqueda);
     }
+
+    public function getUserByUsername($username)
+    {
+        return $this->userRepository->getUserByUsername($username);
+    }
+
+    public function getUserByRol($rol)
+    {
+        return $this->userRepository->getUserByRol($rol);
+    }
 }

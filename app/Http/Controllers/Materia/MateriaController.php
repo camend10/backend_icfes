@@ -447,7 +447,7 @@ class MateriaController extends Controller
         } else {
             return response()->json([
                 'ok' => false,
-                'error' => "La institución no fue modificada"
+                'error' => "La pregunta no fue modificada"
             ], 500);
         }
     }
@@ -489,8 +489,6 @@ class MateriaController extends Controller
                 "ban_imgr2" => $pregunta->ban_imgr2,
                 "ban_imgr3" => $pregunta->ban_imgr3,
                 "ban_imgr4" => $pregunta->ban_imgr4,
-                "sesion" => $pregunta->sesion,
-                "simulacro" => $pregunta->simulacro,
                 "componente" => $pregunta->componente,
                 "competencia" => $pregunta->competencia,
                 "que_desc2" => $pregunta->que_desc2,

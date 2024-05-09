@@ -9,7 +9,7 @@ class Pregunta extends Model
 {
     use HasFactory;
 
-    protected $table = 'mst_question';
+    protected $table = 'preguntas';
 
     protected $fillable = [
         "test_id",
@@ -29,14 +29,17 @@ class Pregunta extends Model
         "ban_imgr2",
         "ban_imgr3",
         "ban_imgr4",
-        "sesion",
-        "simulacro",
         "componente",
         "competencia",
         "que_desc2",
         "que_desc3",
         "pre_test",
         "estado",
-        "user_id"
+        "user_id",
+        "g11",
+        "g9",
+        "g7",
+        "g5",
+        "g3",
     ];
 }

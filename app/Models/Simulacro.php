@@ -14,6 +14,7 @@ class Simulacro extends Model
 
     protected $fillable = [
         "nombre",
-        "estado"
+        "estado",
+        "imagen",
     ];
 }

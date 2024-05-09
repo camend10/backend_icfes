@@ -11,7 +11,7 @@ class Materia extends Model
 
     public $timestamps = false;
 
-    protected $table = 'mst_test';
+    protected $table = 'materias';
 
     protected $fillable = [
         "sub_id",
