@@ -47,4 +47,14 @@ interface SimulacroRepository
     public function getResultadoComponentes(array $vector);
 
     public function getResultadoCompetencias(array $vector);
+
+    public function getPuntajesMaximosMinimos(array $vector);
+
+    public function getPuntajesMateriaEstudiante(array $vector);
+
+    public function getPuntajesTotalMaximosMinimos(array $vector);
+
+    public function getPuntajesTotalMaximosMinimosCursos(array $vector);
+
+    public function getInstitucion2(array $vector);
 }

@@ -122,4 +122,29 @@ class SimulacroService
     {
         return $this->simulacroRepository->getResultadoCompetencias($vector);
     }
+
+    public function getPuntajesMaximosMinimos(array $vector)
+    {
+        return $this->simulacroRepository->getPuntajesMaximosMinimos($vector);
+    }
+
+    public function getPuntajesMateriaEstudiante(array $vector)
+    {
+        return $this->simulacroRepository->getPuntajesMateriaEstudiante($vector);
+    }
+
+    public function getPuntajesTotalMaximosMinimos(array $vector)
+    {
+        return $this->simulacroRepository->getPuntajesTotalMaximosMinimos($vector);
+    }
+
+    public function getPuntajesTotalMaximosMinimosCursos(array $vector)
+    {
+        return $this->simulacroRepository->getPuntajesTotalMaximosMinimosCursos($vector);
+    }
+
+    public function getInstitucion2(array $vector)
+    {
+        return $this->simulacroRepository->getInstitucion2($vector);
+    }
 }

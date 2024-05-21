@@ -4,6 +4,7 @@ namespace App\Http\Controllers\General;
 
 use App\Http\Controllers\Controller;
 use App\Services\GeneralService;
+use App\Services\SimulacroService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -11,11 +12,13 @@ class GeneralController extends Controller
 {
     protected $generalService;
     protected $userService;
+    protected $simulacroService;
 
-    public function __construct(GeneralService $generalService, UserService $userService)
+    public function __construct(GeneralService $generalService, UserService $userService, SimulacroService $simulacroService)
     {
         $this->generalService = $generalService;
         $this->userService = $userService;
+        $this->simulacroService = $simulacroService;
     }
 
     public function departamentos()
@@ -204,6 +207,205 @@ class GeneralController extends Controller
             return response()->json([
                 'ok' => false,
                 'error' => "Lo sentimos, ocurrió un error en el servidor: ",
+            ], 500);
+        }
+    }
+
+    public function resultados()
+    {
+        $datos = [
+            'grado_id' => request()->get('grado_id'),
+            'simulacro_id' => request()->get('simulacro_id'),
+            'institucion_id' => request()->get('institucion_id'),
+            'curso_id' => request()->get('curso_id'),
+            'estado' => 1
+        ];
+
+        $usuarios = $this->generalService->getPuntajesGlobalEstudiante($datos);
+        if ($usuarios) {
+            return response()->json([
+                'ok' => true,
+                'usuarios' => $usuarios
+            ], 201);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'error' => "No se pudo consultar el resultado"
+            ], 500);
+        }
+    }
+
+    public function resultadosInstitucion()
+    {
+        $datos = [
+            'grado_id' => request()->get('grado_id'),
+            'simulacro_id' => request()->get('simulacro_id'),
+            'institucion_id' => request()->get('institucion_id'),
+            'curso_id' => request()->get('curso_id'),
+            'user_id' => 2,
+            'estado' => 1
+        ];
+
+        $institucion = $this->simulacroService->getInstitucion2($datos);
+        $totalEstudiantes = $this->simulacroService->getEstudiantesByResultado($datos);
+        $totalPreguntas = $this->simulacroService->totalSumPreguntas();
+
+        $respu = $this->generalService->getPuntajesGlobalInstitucion($datos);
+
+        $global = 0;
+        $contador = 0;
+        if ($respu) {
+            $global = round($respu->promedio_total, 2);
+            $contador = $respu->contador + 1;
+        }
+
+        $puestosCursos = $this->generalService->getPuntajesGlobalInstitucionPuestos($datos);
+
+        $getPun = $this->generalService->getPuntajesGlobalMateriasInstitucion($datos);
+
+        // MAXIMOS Y MINIMOS
+        $maxmintotal = $this->generalService->getConsultaTotalPromedios($datos);
+
+        // Crear un array asociativo para almacenar los datos
+        $maxminData = [];
+
+        // Inicializar los arrays de datos para cada tipo de puntaje
+        $puntajeMaximo = [];
+        $puntajePromedio = [];
+        $puntajeMinimo = [];
+
+        // Iterar sobre los resultados de la consulta y agregar los datos a los arrays correspondientes
+        $materias = [];
+        foreach ($maxmintotal as $resultado) {
+            $materias[] = $resultado->materia;
+            $puntajeMaximo[] = round($resultado->gran_puntaje_maximo, 2);
+            $puntajePromedio[] =  round($resultado->gran_prom_total, 2);
+            $puntajeMinimo[] =  round($resultado->gran_puntaje_minimo, 2);
+        }
+
+        // Agregar los arrays de datos al array $maxminData
+        $maxminData[] = ['name' => 'Puntaje Máximo', 'data' => $puntajeMaximo];
+        $maxminData[] = ['name' => 'Puntaje Promedio', 'data' => $puntajePromedio];
+        $maxminData[] = ['name' => 'Puntaje Mínimo', 'data' => $puntajeMinimo];
+        // MAXIMOS Y MINIMOS
+
+
+        // ESTADISTICAS ESTUDIANTES
+        $datos['materia_id'] = 1;
+        $resComponentesMatematicas = $this->generalService->getResultadoComponentesGlobal($datos);
+
+        $datos['materia_id'] = 2;
+        $resComponentesLenguaje = $this->generalService->getResultadoComponentesGlobal($datos);
+
+        $datos['materia_id'] = 3;
+        $resComponentesSociales = $this->generalService->getResultadoComponentesGlobal($datos);
+
+        $datos['materia_id'] = 4;
+        $resComponentesNaturales = $this->generalService->getResultadoComponentesGlobal($datos);
+
+        $datos['materia_id'] = 5;
+        $resComponentesIngles = $this->generalService->getResultadoComponentesGlobal($datos);
+
+
+        $datos['materia_id'] = 1;
+        $resCompetenciasMatematicas = $this->generalService->getResultadoCompetenciasGlobal($datos);
+
+        $datos['materia_id'] = 2;
+        $resCompetenciasLenguaje = $this->generalService->getResultadoCompetenciasGlobal($datos);
+
+        $datos['materia_id'] = 3;
+        $resCompetenciasSociales = $this->generalService->getResultadoCompetenciasGlobal($datos);
+
+        $datos['materia_id'] = 4;
+        $resCompetenciasNaturales = $this->generalService->getResultadoCompetenciasGlobal($datos);
+
+        $datos['materia_id'] = 5;
+        $resCompetenciasIngles = $this->generalService->getResultadoCompetenciasGlobal($datos);
+
+        $resComp = [
+            'resComponentesMatematicas' => $resComponentesMatematicas,
+            'resComponentesLenguaje' => $resComponentesLenguaje,
+            'resComponentesSociales' => $resComponentesSociales,
+            'resComponentesNaturales' => $resComponentesNaturales,
+            'resComponentesIngles' => $resComponentesIngles,
+
+            'resCompetenciasMatematicas' => $resCompetenciasMatematicas,
+            'resCompetenciasLenguaje' => $resCompetenciasLenguaje,
+            'resCompetenciasSociales' => $resCompetenciasSociales,
+            'resCompetenciasNaturales' => $resCompetenciasNaturales,
+            'resCompetenciasIngles' => $resCompetenciasIngles,
+        ];
+
+
+        // ESTADISTICAS ESTUDIANTES
+
+        // GRADO VS CURSO
+        $gracurest = [];
+        // Crear un array asociativo para almacenar los datos
+        $gradoCursoEstudiante = [];
+
+        // Crear un array asociativo para almacenar los datos
+        $cursoEstudiante = [];
+        if ($datos['curso_id'] != "0") {
+            // Inicializar los arrays de datos para cada tipo de puntaje
+            $puntajeGrado = [];
+            $puntajeCurso = [];
+
+            $gracurest = $this->generalService->getConsultaTotalPromedios($datos);
+            $datos['curso_id'] = "0";
+            $gracurestGrado = $this->generalService->getConsultaTotalPromedios($datos);
+
+
+            foreach ($gracurestGrado as $resultado) {
+                $puntajeGrado[] =  round($resultado->gran_prom_total, 2);
+            }
+
+            $gradoCursoEstudiante[] = ['name' => 'Grado', 'value' => $puntajeGrado];
+
+            // Iterar sobre los resultados de la consulta y agregar los datos a los arrays correspondientes
+            foreach ($gracurest as $resultado) {
+                $puntajeCurso[] =  round($resultado->puntaje_promedio, 2);
+            }
+
+            // Agregar los arrays de datos al array $maxminData
+            $gradoCursoEstudiante[] = ['name' => 'Curso', 'value' => $puntajeCurso];
+
+            // PROMEDIO CURSO VS PUNTAJE ESTUDIANTE
+
+            // Agregar los arrays de datos al array $maxminData
+            $cursoEstudiante[] = ['name' => 'Promedio Grado', 'data' => $puntajeGrado];
+            $cursoEstudiante[] = ['name' => 'Promedio Curso', 'data' => $puntajeCurso];
+            // PROMEDIO CURSO VS PUNTAJE ESTUDIANTE
+        }
+        $materiasMax = [];
+        foreach ($materias as $index => $resp) {
+            $materiasMax[] = ['name' => $resp, 'max' => 100];
+        }
+
+        // GRADO VS CURSO
+
+
+        if ($institucion) {
+            return response()->json([
+                'ok' => true,
+                'institucion' => $institucion,
+                'totalEstudiantes' => $totalEstudiantes,
+                'totalPreguntas' => $totalPreguntas,
+                'global' => $global,
+                'contador' => $contador,
+                'puntaje' => $getPun,
+                'maxminData' => $maxminData,
+                'materias' => $materias,
+                'gradoCursoEstudiante' => $gradoCursoEstudiante,
+                'materiasMax' => $materiasMax,
+                'cursoEstudiante' => $cursoEstudiante,
+                'resComp' => $resComp,
+                'puestosCursos' => $puestosCursos
+            ], 201);
+        } else {
+            return response()->json([
+                'ok' => false,
+                'error' => "No se pudo consultar el resultado"
             ], 500);
         }
     }

@@ -9,12 +9,13 @@ class Simulacro extends Model
 {
     use HasFactory;
 
-    
+
     protected $table = 'simulacros';
 
     protected $fillable = [
         "nombre",
         "estado",
         "imagen",
+        "resultados",
     ];
 }

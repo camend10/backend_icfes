@@ -83,4 +83,9 @@ Route::middleware('jwt.verify')->group(function () {
         Route::post('verificar-sesion', [SimulacroController::class, 'verificarSesion']);
         Route::post('verificar-resultado-sesiones', [SimulacroController::class, 'verificarResultadoSesiones']);
     });
+
+    Route::prefix('informes')->group(function () {
+        Route::post('/resultados', [GeneralController::class, 'resultados']);
+        Route::post('/resultados-institucion', [GeneralController::class, 'resultadosInstitucion']);
+    });
 });

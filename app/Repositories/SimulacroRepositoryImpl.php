@@ -6,6 +6,10 @@ use App\Interfaces\SimulacroRepository;
 use App\Models\Institucion;
 use App\Models\Pregunta;
 use App\Models\Puntaje;
+use App\Models\PuntajeMateriaEstudiante;
+use App\Models\PuntajeMaximoMinimo;
+use App\Models\PuntajeTotalMaximoMinimo;
+use App\Models\PuntajeTotalMaximoMinimoCurso;
 use App\Models\Resultado;
 use App\Models\ResultadoCompetencias;
 use App\Models\ResultadoComponentes;
@@ -200,13 +204,13 @@ class SimulacroRepositoryImpl implements SimulacroRepository
             ->groupBy('id')
             ->get();
 
-        // return DB::select("SELECT *, (percent*100/total) AS porcentaje 
-        //     FROM resultado_componentes 
-        //     WHERE 
+        // return DB::select("SELECT *, (percent*100/total) AS porcentaje
+        //     FROM resultado_componentes
+        //     WHERE
         //         simulacro_id = " . $vector['simulacro_id'] . "
-        //             AND 
+        //             AND
         //         user_id = " . $vector['user_id'] . "
-        //             AND 
+        //             AND
         //         materia_id = " . $vector['materia_id'] . "
         //     GROUP BY id ORDER BY id;");
     }
@@ -221,6 +225,48 @@ class SimulacroRepositoryImpl implements SimulacroRepository
             )
             ->groupBy('id')
             ->get();
+    }
 
+    public function getPuntajesMaximosMinimos(array $vector)
+    {
+        return PuntajeMaximoMinimo::where('simulacro_id', $vector['simulacro_id'])
+            ->where('grado_id', $vector['grado_id'])
+            ->get();
+    }
+
+    public function getPuntajesMateriaEstudiante(array $vector)
+    {
+        return PuntajeMateriaEstudiante::where('simulacro_id', $vector['simulacro_id'])
+            ->where('user_id', $vector['user_id'])
+            ->get();
+    }
+
+    public function getPuntajesTotalMaximosMinimos(array $vector)
+    {
+        return PuntajeTotalMaximoMinimo::where('simulacro_id', $vector['simulacro_id'])
+            ->where('grado_id', $vector['grado_id'])
+            ->where('user_id', $vector['user_id'])
+
+            ->select(
+                DB::raw('materia,MAX(puntaje_maximo) as puntaje_maximo,puntaje_estudiante,avg(puntaje_promedio) as puntaje_promedio,MIN(puntaje_minimo) as puntaje_minimo')
+            )
+            ->groupBy('materia_id')
+            ->get();
+    }
+
+    public function getPuntajesTotalMaximosMinimosCursos(array $vector)
+    {
+        return PuntajeTotalMaximoMinimoCurso::where('simulacro_id', $vector['simulacro_id'])
+            ->where('grado_id', $vector['grado_id'])
+            ->where('curso_id', $vector['curso_id'])
+            ->where('user_id', $vector['user_id'])
+            ->get();
+    }
+
+    public function getInstitucion2(array $vector)
+    {
+        return Institucion::where('estado', 1)
+            ->where('id', $vector['institucion_id'])
+            ->first();
     }
 }

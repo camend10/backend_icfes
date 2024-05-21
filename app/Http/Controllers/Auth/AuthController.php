@@ -194,10 +194,7 @@ class AuthController extends Controller
                         'icono' => 'ki-duotone ki-file-added',
                         'submenu' => [
                             ['titulo' => 'Resultados', 'url' => '/informe-resultados'],
-                            ['titulo' => 'Entrenamientos', 'url' => '/informe-entrenamientos'],
-                            ['titulo' => 'Areas', 'url' => '/informe-areas'],
-                            ['titulo' => 'Niveles', 'url' => '/informe-niveles'],
-                            ['titulo' => 'Competencias', 'url' => '/informe-competencias'],
+                            ['titulo' => 'Estadisticas', 'url' => '/informe-estadisticas'],
                         ]
                     ]
                 ];
@@ -209,10 +206,7 @@ class AuthController extends Controller
                         'icono' => 'ki-duotone ki-file-added',
                         'submenu' => [
                             ['titulo' => 'Resultados', 'url' => '/informe-resultados'],
-                            ['titulo' => 'Entrenamientos', 'url' => '/informe-entrenamientos'],
-                            ['titulo' => 'Areas', 'url' => '/informe-areas'],
-                            ['titulo' => 'Niveles', 'url' => '/informe-niveles'],
-                            ['titulo' => 'Competencias', 'url' => '/informe-competencias'],
+                            ['titulo' => 'Estadisticas', 'url' => '/informe-estadisticas'],
                         ]
                     ]
                 ];
@@ -235,10 +229,7 @@ class AuthController extends Controller
                         'icono' => 'ki-duotone ki-file-added',
                         'submenu' => [
                             ['titulo' => 'Resultados', 'url' => '/informe-resultados'],
-                            ['titulo' => 'Entrenamientos', 'url' => '/informe-entrenamientos'],
-                            ['titulo' => 'Areas', 'url' => '/informe-areas'],
-                            ['titulo' => 'Niveles', 'url' => '/informe-niveles'],
-                            ['titulo' => 'Competencias', 'url' => '/informe-competencias'],
+                            ['titulo' => 'Estadisticas', 'url' => '/informe-estadisticas'],
                         ]
                     ]
                 ];
@@ -251,11 +242,6 @@ class AuthController extends Controller
     public function obtenerMenu2($ROLE)
     {
         $menu = [
-            // [
-            //     'titulo' => 'Material de apoyo',
-            //     'icono' => 'ki-duotone ki-book-open',
-            //     'url' => '/material'
-            // ],
             [
                 'titulo' => 'Entrenador',
                 'icono' => 'ki-duotone ki-note-2',

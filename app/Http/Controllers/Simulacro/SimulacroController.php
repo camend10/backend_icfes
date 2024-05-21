@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Simulacro;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Resultados\ResultadoRequest;
+use App\Services\GeneralService;
 use App\Services\MateriaService;
 use App\Services\SimulacroService;
 use App\Services\UserService;
@@ -15,12 +16,14 @@ class SimulacroController extends Controller
     protected $simulacroService;
     protected $materiaService;
     protected $userService;
+    protected $generalService;
 
-    public function __construct(SimulacroService $simulacroService, MateriaService $materiaService, UserService $userService)
+    public function __construct(GeneralService $generalService,SimulacroService $simulacroService, MateriaService $materiaService, UserService $userService)
     {
         $this->simulacroService = $simulacroService;
         $this->materiaService = $materiaService;
         $this->userService = $userService;
+        $this->generalService = $generalService;
     }
 
     public function simulacros()
@@ -217,6 +220,8 @@ class SimulacroController extends Controller
         if ($totalSesionesMaterias > 0 && $getPuntajes >= 0) {
             if ($totalSesionesMaterias == $getPuntajes) {
                 $user = $this->userService->getUserById($datos['user_id']);
+
+                // PUNTAJE GLOBAL
                 $getPun = $this->simulacroService->getPuntaje($datos);
                 $suma = 0;
                 $sumPesos = 0;
@@ -228,8 +233,10 @@ class SimulacroController extends Controller
                     $contador++;
                     $fecha = substr($vec->fecha, 0, 10);
                 }
+
                 $global = ($suma / $sumPesos) * $contador;
                 $global = round($global, 2);
+                // PUNTAJE GLOBAL
 
                 $institucion = $this->simulacroService->getInstitucion();
                 $datos['grado_id'] = $user->grado_id;
@@ -237,8 +244,11 @@ class SimulacroController extends Controller
 
                 $totalPreguntas = $this->simulacroService->totalSumPreguntas();
 
+                // PUESTO
                 $puesto = $this->puesto($datos, $datos['user_id']);
+                // PUESTO
 
+                // ESTADISTICAS ESTUDIANTES
                 $datos['materia_id'] = 1;
                 $resComponentesMatematicas = $this->simulacroService->getResultadoComponentes($datos);
 
@@ -284,6 +294,89 @@ class SimulacroController extends Controller
                     'resCompetenciasIngles' => $resCompetenciasIngles,
                 ];
 
+                // ESTADISTICAS ESTUDIANTES
+
+                // MAXIMOS Y MINIMOS                
+                $maxmintotal = $this->simulacroService->getPuntajesTotalMaximosMinimos($datos);                
+
+                // Crear un array asociativo para almacenar los datos
+                $maxminData = [];
+
+                // Inicializar los arrays de datos para cada tipo de puntaje
+                $puntajeMaximo = [];
+                $puntajeEstudiante = [];
+                $puntajePromedio = [];
+                $puntajeMinimo = [];
+
+                // Iterar sobre los resultados de la consulta y agregar los datos a los arrays correspondientes
+                $materias = [];
+                foreach ($maxmintotal as $resultado) {
+                    $materias[] = $resultado->materia;
+                    $puntajeMaximo[] = round($resultado->puntaje_maximo, 2);
+                    $puntajeEstudiante[] = round($resultado->puntaje_estudiante, 2);
+                    $puntajePromedio[] =  round($resultado->puntaje_promedio, 2);
+                    $puntajeMinimo[] =  round($resultado->puntaje_minimo, 2);
+                }
+
+                // Agregar los arrays de datos al array $maxminData
+                $maxminData[] = ['name' => 'Puntaje Máximo', 'data' => $puntajeMaximo];
+                $maxminData[] = ['name' => 'Puntaje Estudiante', 'data' => $puntajeEstudiante];
+                $maxminData[] = ['name' => 'Puntaje Promedio', 'data' => $puntajePromedio];
+                $maxminData[] = ['name' => 'Puntaje Mínimo', 'data' => $puntajeMinimo];
+
+                // dd($maxminData);die;
+                // MAXIMOS Y MINIMOS
+
+                // GRADO VS CURSO VS ESTUDIANTE
+                // Inicializar los arrays de datos para cada tipo de puntaje
+                $puntajeGrado = [];
+                $puntajeEstu = [];
+                $puntajeCurso = [];
+
+                $datos['curso_id'] = $user->curso_id;
+                $gracurest = $this->simulacroService->getPuntajesTotalMaximosMinimosCursos($datos);
+
+                $datos['curso_id'] = "0";
+                $gracurestGrado = $this->generalService->getConsultaTotalPromedios2($datos);
+                foreach ($gracurestGrado as $resultado) {
+                    $puntajeGrado[] =  round($resultado->puntaje_promedio, 2);
+                }
+
+                // Crear un array asociativo para almacenar los datos
+                $gradoCursoEstudiante = [];
+
+
+                // Iterar sobre los resultados de la consulta y agregar los datos a los arrays correspondientes
+                foreach ($gracurest as $resultado) {
+                    $puntajeEstu[] = round($resultado->puntaje_estudiante, 2);
+                    $puntajeCurso[] =  round($resultado->puntaje_promedio, 2);
+                }
+
+                // Agregar los arrays de datos al array $maxminData
+                // $gradoCursoEstudiante[] = ['name' => 'Grado', 'value' => $puntajePromedio];    
+                $gradoCursoEstudiante[] = ['name' => 'Grado', 'value' => $puntajeGrado];            
+                $gradoCursoEstudiante[] = ['name' => 'Estudiante', 'value' => $puntajeEstu];
+                $gradoCursoEstudiante[] = ['name' => 'Curso', 'value' => $puntajeCurso];
+
+                // dd($gradoCursoEstudiante);
+                // die;
+
+
+                $materiasMax = [];
+                foreach ($materias as $index => $resp) {
+                    $materiasMax[] = ['name' => $resp, 'max' => 100];
+                }
+                // GRADO VS CURSO VS ESTUDIANTE
+
+                // PROMEDIO CURSO VS PUNTAJE ESTUDIANTE
+
+                // Crear un array asociativo para almacenar los datos
+                $cursoEstudiante = [];        
+
+                // Agregar los arrays de datos al array $maxminData
+                $cursoEstudiante[] = ['name' => 'Promedio Curso', 'data' => $puntajeCurso];
+                $cursoEstudiante[] = ['name' => 'Promedio Estudiante', 'data' => $puntajeEstu];
+                // PROMEDIO CURSO VS PUNTAJE ESTUDIANTE
 
                 return response()->json([
                     'ok' => true,
@@ -298,6 +391,11 @@ class SimulacroController extends Controller
                     'totalPreguntas' => $totalPreguntas,
                     'puesto' => $puesto,
                     'resComp' => $resComp,
+                    'maxminData' => $maxminData,
+                    'materias' => $materias,
+                    'gradoCursoEstudiante' => $gradoCursoEstudiante,
+                    'materiasMax' => $materiasMax,
+                    'cursoEstudiante' => $cursoEstudiante
 
                 ], 201);
             } else {

@@ -63,4 +63,54 @@ class GeneralService
     {
         return $this->generalRepository->competencias($materia_id);
     }
+
+    public function getPuntajesGlobalEstudiante(array $vector)
+    {
+        return $this->generalRepository->getPuntajesGlobalEstudiante($vector);
+    }
+
+    public function getPuntajesGlobalInstitucion(array $vector)
+    {
+        return $this->generalRepository->getPuntajesGlobalInstitucion($vector);
+    }
+
+    public function getPuntajesGlobalMateriasInstitucion(array $vector)
+    {
+        return $this->generalRepository->getPuntajesGlobalMateriasInstitucion($vector);
+    }
+
+    public function getPuntajesGlobalMaximoMinimoInstitucion(array $vector)
+    {
+        return $this->generalRepository->getPuntajesGlobalMaximoMinimoInstitucion($vector);
+    }
+
+    public function getPuntajeMaximoMinimoCurso(array $vector)
+    {
+        return $this->generalRepository->getPuntajeMaximoMinimoCurso($vector);
+    }
+
+    public function getConsultaTotalPromedios(array $vector)
+    {
+        return $this->generalRepository->getConsultaTotalPromedios($vector);
+    }
+
+    public function getConsultaTotalPromedios2(array $vector)
+    {
+        return $this->generalRepository->getConsultaTotalPromedios2($vector);
+    }
+
+    public function getResultadoComponentesGlobal(array $vector)
+    {
+        return $this->generalRepository->getResultadoComponentesGlobal($vector);
+    }
+
+    public function getResultadoCompetenciasGlobal(array $vector)
+    {
+        return $this->generalRepository->getResultadoCompetenciasGlobal($vector);
+    }
+
+    public function getPuntajesGlobalInstitucionPuestos(array $vector)
+    {
+        return $this->generalRepository->getPuntajesGlobalInstitucionPuestos($vector);
+    }
 }
